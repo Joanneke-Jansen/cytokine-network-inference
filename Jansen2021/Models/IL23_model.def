@@ -1,0 +1,64 @@
+DESCRIPTION
+"Full model"
+
+PREDICTOR
+t               T   "hours"     "time"	0	16
+
+COMPARTMENTS
+
+STATES
+TNFA           C   "nM"      "conc."    
+IL1A           C   "nM"      "conc."    
+IL1B           C   "nM"      "conc."    
+IL6            C   "nM"      "conc."    
+IL10           C   "nM"      "conc."    
+IL23           C   "nM"      "conc."    
+
+INPUTS
+LPS_TNFA C   "units/cell"   "conc."   "0"
+LPS_IL1A C   "units/cell"   "conc."   "0"
+LPS_IL1B C   "units/cell"   "conc."   "0"
+LPS_IL6  C   "units/cell"   "conc."   "0"
+LPS_IL10 C   "units/cell"   "conc."   "0"
+LPS_IL23 C   "units/cell"   "conc."   "0"
+s_aTNFA  C   "units/cell"   "conc."   "input_aTNFA"
+s_aIL6R  C   "units/cell"   "conc."   "input_aIL6R"
+s_aIL1A  C   "units/cell"   "conc."   "input_aIL1A"
+s_aIL1B  C   "units/cell"   "conc."   "input_aIL1B"
+s_aIL1R  C   "units/cell"   "conc."   "input_aIL1R"
+s_aIL10R C   "units/cell"   "conc."   "input_aIL10R"
+IFNG     C   "units/cell"   "conc."   "input_IFNG"
+
+ODES
+"LPS_TNFA*1/(1+s_aIL10R*beta_51*IL10)*(1+alpha_71*IFNG)"
+"LPS_IL1A*(1+s_aIL1A*s_aIL1R*alpha_22*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_32*IL1B)*1/(1+s_aIL10R*beta_52*IL10)"
+"LPS_IL1B*(1+s_aIL1A*s_aIL1R*alpha_23*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_33*IL1B)*1/(1+s_aIL10R*beta_53*IL10)"
+"LPS_IL6*(1+s_aIL1A*s_aIL1R*alpha_24*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_34*IL1B)*1/(1+s_aIL10R*beta_54*IL10)*(1+alpha_74*IFNG)"
+"LPS_IL10*(1+s_aIL1A*s_aIL1R*alpha_25*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_35*IL1B)*1/(1+s_aIL10R*beta_55*IL10)"
+"LPS_IL23*(1+s_aIL1A*s_aIL1R*alpha_26*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_36*IL1B)*1/(1+s_aIL10R*beta_56*IL10)*(1+alpha_76*IFNG)"
+
+DERIVED
+        
+OBSERVABLES
+TNFA_mfi        C   "mfi"  "mfi"   0   1   "LPS_TNFA*1/(1+s_aIL10R*beta_51*IL10)*(1+alpha_71*IFNG)"
+IL1A_mfi        C   "mfi"  "mfi"   0   1   "LPS_IL1A*(1+s_aIL1A*s_aIL1R*alpha_22*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_32*IL1B)*1/(1+s_aIL10R*beta_52*IL10)"
+IL1B_mfi        C   "mfi"  "mfi"   0   1   "LPS_IL1B*(1+s_aIL1A*s_aIL1R*alpha_23*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_33*IL1B)*1/(1+s_aIL10R*beta_53*IL10)"
+IL6_mfi        C   "mfi"  "mfi"   0   1   "LPS_IL6*(1+s_aIL1A*s_aIL1R*alpha_24*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_34*IL1B)*1/(1+s_aIL10R*beta_54*IL10)*(1+alpha_74*IFNG)"
+IL10_mfi        C   "mfi"  "mfi"   0   1   "LPS_IL10*(1+s_aIL1A*s_aIL1R*alpha_25*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_35*IL1B)*1/(1+s_aIL10R*beta_55*IL10)"
+p19_mfi         C   "mfi"  "mfi"   0   1 "LPS_IL23*(1+s_aIL1A*s_aIL1R*alpha_26*IL1A)*(1+s_aIL1B*s_aIL1R*alpha_36*IL1B)*1/(1+s_aIL10R*beta_56*IL10)*(1+alpha_76*IFNG)"
+
+ERRORS
+TNFA_mfi        "sd_TNFA_mfi"
+IL1A_mfi        "sd_IL1A_mfi"
+IL1B_mfi        "sd_IL1B_mfi"
+IL6_mfi         "sd_IL6_mfi"
+IL10_mfi        "sd_IL10_mfi"
+p19_mfi         "sd_p19_mfi"
+
+CONDITIONS
+init_TNFA     	"0.0001"
+init_IL1A     	"0.0001"
+init_IL1B     	"0.0001"
+init_IL6      	"0.0001"
+init_IL10    	"0.0001"
+init_IL23     	"0.0001"
