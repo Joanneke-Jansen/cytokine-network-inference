@@ -1,0 +1,19 @@
+DESCRIPTION
+"Model 22 June 2018"
+
+PREDICTOR
+t               T   "hours"     "time"	0	16
+
+INPUTS
+LPS_TNFA  "LPS_TNFA_c"
+LPS_IL1A  "LPS_IL1A_c"
+LPS_IL1B  "LPS_IL1B_c"
+LPS_IL6   "LPS_IL6_c"
+LPS_IL10  "LPS_IL10_c"
+LPS_IL23  "LPS_IL23_c"
+
+OBSERVABLES
+
+ERRORS
+        
+CONDITIONS
