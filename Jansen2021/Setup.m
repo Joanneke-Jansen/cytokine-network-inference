@@ -14,7 +14,6 @@ end
 %% Fit the model with all significant edges to the data (the N-sized model):
 disp('Fit the model with all significant edges to the data:')
 TSTART = tic;
-%Elapsed time is 950.178964 seconds.
 First_fit_IL23_model
 
 %% Compute D and AIC for the initial list of configurations (Method Step 2):
@@ -34,6 +33,7 @@ for I=1:(n_o+p_max)
     [IL23_model_saved_chi2s]=Procedure_Omega_hat_IL23_model(I,IL23_model_saved_chi2s);
 end
 toc(TSTART)
+%Elapsed time is 950.178964 seconds.
 
 %% We conclude:
 disp('The model with edges:')
