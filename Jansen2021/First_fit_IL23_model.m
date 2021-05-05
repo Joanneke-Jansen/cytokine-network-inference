@@ -30,7 +30,7 @@ catch
     IL23_model_saved_chi2s.chi2(1)=ar.chi2;
     IL23_model_saved_chi2s.p(1,:)=ar.p;
     IL23_model_saved_chi2s.multiple_minima_number_of_minima(1)=0;
-    IL23_model_saved_chi2s.multiple_minima_number_of_minima_observed_once(1)=0;
+    IL23_model_saved_chi2s.multiple_minima_sample_size_calculation{1}={};
     IL23_model_saved_chi2s.multiple_minima_edges{1}={};
    
     save('IL23_model_saved_chi2s.mat','IL23_model_saved_chi2s')
@@ -66,8 +66,8 @@ if ~flag
     
     if ar.LhsSampleSizeCalculation.D > 1
         IL23_model_saved_chi2s.multiple_minima_number_of_minima(end+1)=ar.LhsSampleSizeCalculation.D;
+        IL23_model_saved_chi2s.multiple_minima_sample_size_calculation{end+1}=ar.LhsSampleSizeCalculation;
         IL23_model_saved_chi2s.multiple_minima_edges{end+1}=edge_labels;
-        IL23_model_saved_chi2s.multiple_minima_number_of_minima_observed_once(end+1)=ar.LhsSampleSizeCalculation.f1;
         if max(min(ar.ps(ar.chi2s-min(ar.chi2s)>1e-4,ar.qFit==1)'))>-16
             %Comment out the following error to increase the number
             %of initial guesses until all local minima are observed more

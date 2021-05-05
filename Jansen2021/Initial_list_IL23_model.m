@@ -34,13 +34,13 @@ for n=1:length(edge_labels)
     end
     
     if ~flag
-    arSetPars('LPS_IL10_c',0,1,[],-1.5,0);
-    arSetPars('LPS_IL1A_c',0,1,[],-1.5,0);
-    arSetPars('LPS_IL1B_c',0,1,[],-1.5,0);
-    arSetPars('LPS_IL23_c',0,1,[],-1.5,0);
-    arSetPars('LPS_IL6_c',0,1,[],-1.5,0);
-    arSetPars('LPS_TNFA_c',0,1,[],-1.5,0);
-    
+        arSetPars('LPS_IL10_c',0,1,[],-1.5,0);
+        arSetPars('LPS_IL1A_c',0,1,[],-1.5,0);
+        arSetPars('LPS_IL1B_c',0,1,[],-1.5,0);
+        arSetPars('LPS_IL23_c',0,1,[],-1.5,0);
+        arSetPars('LPS_IL6_c',0,1,[],-1.5,0);
+        arSetPars('LPS_TNFA_c',0,1,[],-1.5,0);
+        
         %Remove all edges:
         for p=1:length(edge_labels)
             arSetPars(edge_labels{p},-100,2,[],-100,[]);
@@ -58,7 +58,7 @@ for n=1:length(edge_labels)
         
         if ar.LhsSampleSizeCalculation.D > 1
             IL23_model_saved_chi2s.multiple_minima_number_of_minima(end+1)=ar.LhsSampleSizeCalculation.D;
-            IL23_model_saved_chi2s.multiple_minima_number_of_minima_observed_once(end+1)=ar.LhsSampleSizeCalculation.f1;
+            IL23_model_saved_chi2s.multiple_minima_sample_size_calculation{end+1}=ar.LhsSampleSizeCalculation;
             IL23_model_saved_chi2s.multiple_minima_edges{end+1}=subconfiguration;
             if max(min(ar.ps(ar.chi2s-min(ar.chi2s)>1e-4,ar.qFit==1)'))>-16
                 %Comment out the following error to increase the number
@@ -78,11 +78,10 @@ for n=1:length(edge_labels)
                 end
             end
         end
+        IL23_model_saved_chi2s.edges{end+1}=subconfiguration;
+        IL23_model_saved_chi2s.chi2(end+1)=ar.chi2;
+        IL23_model_saved_chi2s.p(end+1,:)=ar.p';
         
-    IL23_model_saved_chi2s.edges{end+1}=subconfiguration;
-    IL23_model_saved_chi2s.chi2(end+1)=ar.chi2;
-    IL23_model_saved_chi2s.p(end+1,:)=ar.p';
-    
     end
     
     save('IL23_model_saved_chi2s.mat','IL23_model_saved_chi2s')

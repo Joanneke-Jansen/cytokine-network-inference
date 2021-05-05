@@ -142,6 +142,17 @@ else
     end
 end
 
+% Double check the algorithm converged to a local minimum: %JEJ: added line
+ar.lb(ar.qFit==1)=-20; %JEJ: added line
+ar.ub(ar.qFit==1)=5; %JEJ: added line
+for i=1:n %JEJ: added line
+    ar.p=ar.ps(i,:);%JEJ: added line
+    arFit(true); %JEJ: added line
+    ar.chi2s(i)=ar.chi2; %JEJ: added line
+end %JEJ: added line
+ar.lb(ar.qFit==1)=lb_for_LHS_initial_guess(ar.qFit==1);%JEJ: added line
+ar.ub(ar.qFit==1)=ub_for_LHS_initial_guess(ar.qFit==1);%JEJ: added line
+
 try
     %ar.LhsSampleSizeCalculation = arLhsSampleSizeCalculation; %JEJ: removed line
     ar.LhsSampleSizeCalculation = arLhsSampleSizeCalculation_Jansen2021;%JEJ: added line

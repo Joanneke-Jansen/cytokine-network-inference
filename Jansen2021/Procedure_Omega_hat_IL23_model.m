@@ -188,7 +188,7 @@ if ~flag
     if ar.LhsSampleSizeCalculation.D > 1
         IL23_model_saved_chi2s.multiple_minima_number_of_minima(end+1)=ar.LhsSampleSizeCalculation.D;
         IL23_model_saved_chi2s.multiple_minima_edges{end+1}=subconfiguration;
-        IL23_model_saved_chi2s.multiple_minima_number_of_minima_observed_once(end+1)=ar.LhsSampleSizeCalculation.f1;
+        IL23_model_saved_chi2s.multiple_minima_sample_size_calculation{end+1}=ar.LhsSampleSizeCalculation;
         if max(min(ar.ps(ar.chi2s-min(ar.chi2s)>1e-4,ar.qFit==1)'))>-16
             %Comment out the following error to increase the number
             %of initial guesses until all local minima are observed more
