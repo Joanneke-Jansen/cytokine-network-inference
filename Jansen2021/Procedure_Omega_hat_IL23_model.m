@@ -32,8 +32,8 @@ end
 IL23_model_saved_chi2s.AIC=IL23_model_saved_chi2s.AIC-min(IL23_model_saved_chi2s.AIC);
 
 %Set threshold value chi2_threshold:
-[~,n_o]=min(IL23_model_saved_chi2s.AIC);
-chi_threshold=IL23_model_saved_chi2s.chi2s(n_o)+2*(I-n_o);
+[~,n_s]=min(IL23_model_saved_chi2s.AIC);
+chi_threshold=IL23_model_saved_chi2s.chi2s(n_s)+2*(I-n_s);
 
 disp(['We check whether a model of size ', num2str(I), ' exists with a D smaller than ',num2str(chi_threshold),'.' ])
 disp(['Current found minimal model of size ',num2str(I),' has chi2 = ', num2str(IL23_model_saved_chi2s.chi2s(I)),', with edges:',])
@@ -111,7 +111,8 @@ if ~isempty(free_edges)
                     if flag==0
                         [chi2,IL23_model_saved_chi2s]=compute_chi2(subconfiguration,IL23_model_saved_chi2s);
                         if chi2<chi_threshold
-                            error(['Found a better model configuration for model size ',num2str(I)])
+                            disp(['Found a better model configuration, rerunning Omega hat...'])
+                            Procedure_Omega_hat_IL23_model(I,IL23_model_saved_chi2s)
                             return
                         end
                     end
