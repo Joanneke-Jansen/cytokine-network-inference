@@ -14,7 +14,6 @@ end
 %% Fit the model with all significant edges to the data (the N-sized model):
 disp('Fit the model with all significant edges to the data:')
 TSTART = tic;
-%Elapsed time is 950.178964 seconds.
 First_fit_IL23_model
 
 %% Compute D and AIC for the initial list of configurations (Method Step 2):
@@ -28,12 +27,12 @@ disp('currently has the lowest relative AIC')
 [IL23_model_saved_chi2s]=Procedure_Omega_IL23_model(n_o,IL23_model_saved_chi2s);
 
 %% We check whether a network configuration exists, with a lower relative AIC than S_selected:
-% for every model size n=1, 2, ..., n_o+p_{max}. (Method Step 4):
-p_max=floor((IL23_model_saved_chi2s.chi2s(n_o)-IL23_model_saved_chi2s.chi2s(end))/2);
-for I=1:(n_o+p_max)
-    [IL23_model_saved_chi2s]=Procedure_Omega_hat_IL23_model(I,IL23_model_saved_chi2s);
+% for every model size n=1, 2, ..., N-1. (Method Step 4):
+for I=1:18
+    [IL23_model_saved_chi2s]=Procedure_Omega_IL23_model(I,IL23_model_saved_chi2s);
 end
 toc(TSTART)
+%Elapsed time is 950.178964 seconds.
 
 %% We conclude:
 disp('The model with edges:')

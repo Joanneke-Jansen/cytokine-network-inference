@@ -1,13 +1,13 @@
-function [IL23_model_saved_chi2s]=Procedure_Omega_IL23_model(n_o,IL23_model_saved_chi2s)
+function [IL23_model_saved_chi2s]=Procedure_Omega_IL23_model(I,IL23_model_saved_chi2s)
 
 edge_labels=IL23_model_saved_chi2s.edge_labels;
 
-if n_o==length(edge_labels)
+if I==length(edge_labels)
     disp('All significant edges are already part of the model.')
     return
 end
 
-%Retrieve current minimal model configurations:
+%Retrieve current minimal model configurations for every model size n:
 for w=1:length(edge_labels)
     index=0;
     min_chi2=IL23_model_saved_chi2s.chi2(1);
@@ -24,23 +24,34 @@ for w=1:length(edge_labels)
     IL23_model_saved_chi2s.chi2s(w)=min_chi2;
 end
 
-disp(['Current found minimal model of size ',num2str(n_o),' has chi2=', num2str(IL23_model_saved_chi2s.chi2s(n_o)),', with edges:',])
-IL23_model_saved_chi2s.initial_model{n_o}
+%Retrieve current relative AIC values for every model size n:
+for i=1:size(IL23_model_saved_chi2s.initial_model,2)
+    number_of_edges=size(IL23_model_saved_chi2s.initial_model{i},2);
+    IL23_model_saved_chi2s.AIC(i)=IL23_model_saved_chi2s.chi2s(i)+2*number_of_edges;
+end
+IL23_model_saved_chi2s.AIC=IL23_model_saved_chi2s.AIC-min(IL23_model_saved_chi2s.AIC);
 
-added_edges=IL23_model_saved_chi2s.initial_model{n_o};
+%Set threshold value chi2_threshold:
+[~,n_s]=min(IL23_model_saved_chi2s.AIC);
+chi_threshold=IL23_model_saved_chi2s.chi2s(n_s)+2*(I-n_s);
+
+disp(['We check whether a model of size ', num2str(I), ' exists with a D smaller than ',num2str(chi_threshold),'.' ])
+disp(['Current found minimal model of size ',num2str(I),' has chi2 = ', num2str(IL23_model_saved_chi2s.chi2s(I)),', with edges:',])
+IL23_model_saved_chi2s.initial_model{I}
+
+added_edges=IL23_model_saved_chi2s.initial_model{I};
 removed_edges=edge_labels(~contains(edge_labels,added_edges));
 
 free_edges=[];
 fixed_edges=[];
-for m=1:n_o
-    % We remove the edges of the n_o edge model one by one from the
-    % N-sized model. If the removal of a single edge already results in a chi2
-    % that is larger than the found chi2 of the n_o edge model, we know
-    % this edge is essential for the n_o edge model and we fix it.
-    disp('Compute subconfiguration:')
-    subconfiguration=edge_labels(~contains(edge_labels,added_edges(m)))
+for m=1:I
+    % We remove the edges of the I edge model one by one from the
+    % N-edge model. If the removal of a single edge already results in
+    % a chi2 that is larger than chi2_threshold, we know
+    % this edge is essential and we fix it.
+    subconfiguration=edge_labels(~contains(edge_labels,added_edges(m)));
     [chi2,IL23_model_saved_chi2s]=compute_chi2(subconfiguration,IL23_model_saved_chi2s);
-    if chi2<IL23_model_saved_chi2s.chi2s(n_o)
+    if chi2<chi_threshold
         free_edges=[free_edges, added_edges(m)];
     else
         fixed_edges=[fixed_edges, added_edges(m)]; % We can't remove this edge
@@ -63,13 +74,13 @@ if ~isempty(free_edges)
         end
         for m=1:size(M,1)
             % We check whether the removal of this combination of edges
-            % from the N-sized model
-            % results in a chi2 that is larger than the found chi2 of
-            % the initial n_o-sized model. If so, this combination is essential and can not be removed and
+            % from the full model
+            % results in a chi2 that is larger than chi2_threshold
+            % If so, this combination can not be removed and
             % we remove it from the list of combinations to try
             subconfiguration=edge_labels(~contains(edge_labels,M(m,:)));
             [chi2,IL23_model_saved_chi2s]=compute_chi2(subconfiguration,IL23_model_saved_chi2s);
-            if chi2>IL23_model_saved_chi2s.chi2s(n_o)
+            if chi2>chi_threshold
                 for q=j+1:length(free_edges)
                     temp=MM{q};
                     temp=temp(sum(contains(temp,M(m,:)),2)~=j,:);
@@ -77,7 +88,7 @@ if ~isempty(free_edges)
                 end
             else
                 % We found a combination that might be replaced by edges
-                % not present in the initial n_o edge model. We check
+                % not present in the initial I edge model. We check
                 % this:
                 disp('We check whether the combination of edges')
                 M(m,:)
@@ -91,18 +102,17 @@ if ~isempty(free_edges)
                     flag=0;
                     for y=1:length(IL23_model_saved_chi2s.edges)
                         if sum(contains(IL23_model_saved_chi2s.edges{y},subconfiguration))==size(subconfiguration,2)
-                            if IL23_model_saved_chi2s.chi2(y)>IL23_model_saved_chi2s.chi2s(n_o)
+                            if IL23_model_saved_chi2s.chi2(y)>chi_threshold
                                 flag=1;
                             end
                         end
                     end
+                    
                     if flag==0
                         [chi2,IL23_model_saved_chi2s]=compute_chi2(subconfiguration,IL23_model_saved_chi2s);
-                        if chi2<IL23_model_saved_chi2s.chi2s(n_o)
-                            disp(['Found a better model configuration for model size ',num2str(n_o)])
-                            %We repeat the procedure for the new model
-                            %configuration:
-                            Procedure_Omega_IL23_model(n_o,IL23_model_saved_chi2s)
+                        if chi2<chi_threshold
+                            disp(['Found a better model configuration, rerunning Omega...'])
+                            Procedure_Omega_IL23_model(I,IL23_model_saved_chi2s)
                             return
                         end
                     end
@@ -134,7 +144,7 @@ for i=1:size(IL23_model_saved_chi2s.initial_model,2)
     number_of_edges=size(IL23_model_saved_chi2s.initial_model{i},2);
     IL23_model_saved_chi2s.AIC(i)=IL23_model_saved_chi2s.chi2s(i)+2*number_of_edges;
 end
-save('IL23_model_saved_chi2s.mat','IL23_model_saved_chi2s')
+    save('IL23_model_saved_chi2s.mat','IL23_model_saved_chi2s')
 
 end
 
